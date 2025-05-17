@@ -1,0 +1,327 @@
+increment:
+  alias: Increment
+  description: ''
+  sequence:
+    - service: modbus.write_register
+      data:
+        hub: heatpump
+        slave: 20
+        address: 2048
+        value: "{{ (states('sensor.sanitarna_voda_temperature_okrog_2') | float * 10 + 10) | int }}"
+decrement:
+  alias: Decrement
+  description: ''
+  sequence:
+    - service: modbus.write_register
+      data:
+        hub: heatpump
+        slave: 20
+        address: 2048
+        value: "{{ (states('sensor.sanitarna_voda_temperature_okrog_2') | float * 10 - 10) | int }}"
+
+dodatni_vir_on:
+  alias: "Vklopi dodatni vir"
+  description: "Vklopi dodatni vir"
+  mode: single
+  sequence:
+    - service: modbus.write_register
+      data:
+        hub: heatpump
+        slave: 20
+        address: 2015
+        value: 1
+dodatni_vir_off:
+  alias: "Izklopi dodatni vir"
+  description: "Izklopi dodatni vir"
+  mode: single
+  sequence:
+    - service: modbus.write_register
+      data:
+        hub: heatpump
+        slave: 20
+        address: 2015
+        value: 0
+        
+rezervni_vir_on:
+  alias: "Vklopi rezervni vir"
+  description: "Vklopi rezervni vir"
+  mode: single
+  sequence:
+    - service: modbus.write_register
+      data:
+        hub: heatpump
+        slave: 20
+        address: 2017
+        value: 1
+rezervni_vir_off:
+  alias: "Izklopi rezervni vir"
+  description: "Vklopi rezervni vir"
+  mode: single
+  sequence:
+    - service: modbus.write_register
+      data:
+        hub: heatpump
+        slave: 20
+        address: 2017
+        value: 0
+        
+increase_heat_pump_temp:
+  alias: "Increase Heat Pump Temperature"
+  icon: mdi:thermometer-plus
+  description: "Check conditions and increase heat pump temperature if needed"
+  mode: single
+  sequence:
+    - service: python_script.heat_pump_control
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Heat Pump Control"
+        message: "Temperature adjustment script has been run"
+        domain: script
+decrease_heat_pump_temp:
+  alias: "Decrease Heat Pump Temperature"
+  icon: mdi:thermometer-plus
+  description: "Check conditions and decrease heat pump temperature if needed"
+  mode: single
+  sequence:
+    - service: python_script.heat_pump_control_decrease
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Heat Pump Control Decrease"
+        message: "Temperature adjustment script has been run"
+        domain: script
+        
+holidays_mode:
+  alias: "Turn on holiday mode"
+  icon: mdi:thermometer-plus
+  description: "Check conditions and turn on holiday mode"
+  mode: single
+  sequence:
+    - service: python_script.dopust
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Holiday mode"
+        message: "Holiday mode adjustment script has been run"
+        domain: script
+holidays_mode_off:
+  alias: "Turn off holiday mode"
+  icon: mdi:thermometer-plus
+  description: "Check conditions and turn off holiday mode"
+  mode: single
+  sequence:
+    - service: python_script.dopust_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Holiday mode off"
+        message: "Holiday mode adjustment script has been run"
+        domain: script
+        
+eco_mode_on:
+  alias: "ECO mode"
+  icon: mdi:thermometer-plus
+  description: "Turn on eco mode"
+  mode: single
+  sequence:
+    - service: python_script.eco_mode_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "ECO mode ON"
+        message: "Turn on ECO mode"
+        domain: script
+eco_mode_off:
+  alias: "ECO mode off"
+  icon: mdi:thermometer-plus
+  description: "Turn off eco mode"
+  mode: single
+  sequence:
+    - service: python_script.eco_mode_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "ECO mode OFF"
+        message: "Turn off ECO mode"
+        domain: script
+        
+adaptiva_on:
+  alias: "Adaptive curve ON"
+  icon: mdi:thermometer-plus
+  description: "Turn on adaptive curve"
+  mode: single
+  sequence:
+    - service: python_script.adaptive_curve_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Adaptive curve ON"
+        message: "Turn on adaptive curve"
+        domain: script
+adaptiva_off:
+  alias: "Adaptive curve OFF"
+  icon: mdi:thermometer-plus
+  description: "Turn off adaptive curve"
+  mode: single
+  sequence:
+    - service: python_script.adaptive_curve_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Adaptive curve OFF"
+        message: "Turn off adaptive curve"
+        domain: script
+
+sanitarna_on:
+  alias: "Sanitary water ON"
+  icon: mdi:thermometer-plus
+  description: "Turn on sanitary water"
+  mode: single
+  sequence:
+    - service: python_script.sanitary_water_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Sanitary water ON"
+        message: "Turn on sanitary water"
+        domain: script
+sanitarna_off:
+  alias: "Sanitary water OFF"
+  icon: mdi:thermometer-plus
+  description: "Turn off sanitary water"
+  mode: single
+  sequence:
+    - service: python_script.sanitary_water_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Sanitary water OFF"
+        message: "Turn off sanitary water"
+        domain: script
+        
+hitro_segrevanje_on:
+  alias: "Fast heating sanitary water ON"
+  icon: mdi:thermometer-plus
+  description: "Turn on fast heating sanitary water"
+  mode: single
+  sequence:
+    - service: python_script.fast_heating_sanitary_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Fast heating sanitary water ON"
+        message: "Turn on fast heating sanitary water"
+        domain: script
+hitro_segrevanje_off:
+  alias: "Fast heating sanitary water OFF"
+  icon: mdi:thermometer-plus
+  description: "Turn off fast heating sanitary water"
+  mode: single
+  sequence:
+    - service: python_script.fast_heating_sanitary_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Fast heating sanitary water OFF"
+        message: "Turn off fast heating sanitary water"
+        domain: script
+        
+pump_on:
+  alias: "Heat pump ON"
+  icon: mdi:thermometer-plus
+  description: "Turn on heat pump"
+  mode: single
+  sequence:
+    - service: python_script.pump_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Heat pump ON"
+        message: "Turn on heat pump"
+        domain: script
+pump_off:
+  alias: "Heat pump OFF"
+  icon: mdi:thermometer-plus
+  description: "Turn off heat pump"
+  mode: single
+  sequence:
+    - service: python_script.pump_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Heat pump OFF"
+        message: "Turn off heat pump"
+        domain: script
+        
+additional_source_on:
+  alias: "Additional source ON"
+  icon: mdi:thermometer-plus
+  description: "Turn on additional source"
+  mode: single
+  sequence:
+    - service: python_script.additional_source_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Additional source ON"
+        message: "Turn on additional source"
+        domain: script
+additional_source_off:
+  alias: "Additional source OFF"
+  icon: mdi:thermometer-plus
+  description: "Turn off additional_source"
+  mode: single
+  sequence:
+    - service: python_script.additional_source_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Additional source OFF"
+        message: "Turn off additional source"
+        domain: script
+        
+backup_source_on:
+  alias: "Backup source ON"
+  icon: mdi:thermometer-plus
+  description: "Turn on backup source"
+  mode: single
+  sequence:
+    - service: python_script.backup_source_on
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Backup source ON"
+        message: "Turn on backup source"
+        domain: script
+backup_source_off:
+  alias: "Backup OFF"
+  icon: mdi:thermometer-plus
+  description: "Turn off backup source"
+  mode: single
+  sequence:
+    - service: python_script.backup_source_off
+      data: {}
+    - delay: 00:00:05  # Brief delay to allow script to complete
+    - service: logbook.log
+      data:
+        name: "Backup source OFF"
+        message: "Turn off backuo source"
+        domain: script

@@ -1,0 +1,144 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+# Enable Python Script integration
+python_script:
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+modbus:
+  - name: heatpump
+    type: serial
+    port: /dev/ttyUSB0
+    baudrate: 115200
+    stopbits: 1
+    bytesize: 8
+    parity: N
+    method: rtu
+    timeout: 2
+    delay: 1
+    
+    # Define sensors (read-only entities)
+    sensors:
+      - name: "Želena temperatura ogrevalnega kroga 2"
+        slave: 20
+        address: 2048
+        input_type: holding
+        scale: 0.1
+        precision: 1
+        unique_id: "kronoterm_mode4"
+        
+      - name: "Dodatni vir"
+        slave: 20
+        address: 2015
+        input_type: holding
+        data_type: uint16
+        unique_id: "dodatni_vir"
+        
+      - name: "Rezervni vir"
+        slave: 20
+        address: 2017
+        input_type: holding
+        data_type: uint16
+        unique_id: "rezervni_vir"
+      
+      - name: "Vklop/izklop črpalke"
+        slave: 20
+        address: 2011
+        input_type: holding
+        data_type: uint16
+        unique_id: "vklop_izklop"
+        
+      - name: "Vklop/izklop sanitarne vode"
+        slave: 20
+        address: 2025
+        input_type: holding
+        data_type: uint16
+        unique_id: "vklop_izklop_sanitarna_voda"
+        
+      - name: "Vklop/izklop hitrog sagrevanja sanitarne vode"
+        slave: 20
+        address: 2014
+        input_type: holding
+        data_type: uint16
+        unique_id: "vklop_izklop_sanitarna"
+        
+      - name: "ECO mode"
+        slave: 20
+        address: 2012
+        input_type: holding
+        data_type: uint16
+        unique_id: "eco_mode"
+        
+      - name: "Napaka"
+        slave: 20
+        address: 2112
+        input_type: holding
+        data_type: uint16
+        unique_id: "error_mode"
+        
+      - name: "Zunanja temperatura"
+        slave: 20
+        address: 2102
+        input_type: holding
+        scale: 0.1
+        precision: 1
+        unique_id: "temp"
+             
+      - name: "Adaptivna krivulja"
+        slave: 20
+        address: 2320
+        input_type: holding
+        data_type: uint16
+        unique_id: "adaptivna_krivulja"
+        
+      - name: "Status napake"
+        slave: 20
+        address: 2005
+        input_type: holding
+        data_type: uint16
+        unique_id: "status_napake"
+      
+      - name: "Funkcija delovanja"
+        slave: 20
+        address: 2000
+        input_type: holding
+        data_type: uint16
+        unique_id: "funkcija_delovanja"
+template:
+- sensor:
+  - name: "Funkcija delvoanja opis"
+    unique_id: "funkcija_delovanja"
+    state: >
+      {% set code = states('sensor.funkcija_delovanja') | int %}
+      {% if code == 0 %}
+        Ogravanje
+      {% elif code == 1 %}
+        Sanitarna voda
+      {% elif code == 2 %}
+        Hlajenje
+      {% elif code == 3 %}
+        Ogrevanje bazena
+      {% elif code == 4 %}
+        Pregrevanje sanitarne vode 
+      {% elif code == 5 %}
+        Mirovanje
+      {% else %}
+        Daljinski izklop
+      {% endif %}
+  - name: "Status napake opis"
+    unique_id: "status_napake"
+    state: >
+      {% set code = states('sensor.status_napake') | int %}
+      {% if code == 0 %}
+        Ni napake
+      {% elif code == 1 %}
+        Opozorilo
+      {% elif code == 2 %}
+        Alarm
+      {% elif code == 3 %}
+        Obvestilo
+      {% endif %}
+        
