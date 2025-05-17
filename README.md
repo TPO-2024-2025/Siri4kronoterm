@@ -54,7 +54,7 @@ Po namestitvi integracij morate prekopirati datoteke iz prenesene mape `Koda` v 
 3. **python_scripts**:
    - V File Editor navigirajte do mape, kjer se nahajata `scripts.yaml` in `configuration.yaml`
    - Poiščite ali ustvarite mapo `python_scripts`
-   - Kopirajte vseh 10 Python skript iz mape `Koda/python_scripts` v Home Assistant mapo `python_scripts`
+   - Kopirajte vse Python skripte iz mape `Koda/python_scripts` v Home Assistant mapo `python_scripts`
    - Shranite spremembe
 
 ### 4. Preverjanje konfiguracije in ponovni zagon
